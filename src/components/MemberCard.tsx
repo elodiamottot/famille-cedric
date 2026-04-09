@@ -8,12 +8,14 @@ interface Member {
   id: string;
   name: string;
   relation: string;
+  age: string;
   layout: "full" | "simple" | "full-simple";
   photo_avant: string | null;
   photo_apres: string | null;
   photo_signe: string | null;
   photo_single: string | null;
   card_class: string | null;
+  companion_label: string | null;
 }
 
 interface Companion {
@@ -167,12 +169,13 @@ export default function MemberCard({
         className="card-relation"
         onUpdate={handleUpdate}
       />
+      {member.age && <div className="card-age">{member.age}</div>}
 
       <div className="mb-4">{renderPhotoLayout()}</div>
 
       {companions.length > 0 && (
         <div className="mini-trombi">
-          <div className="mini-trombi-title">Compagnons</div>
+          <div className="mini-trombi-title">{member.companion_label || "Compagnons"}</div>
           <div className="flex flex-wrap gap-3 justify-center">
             {companions.map((companion) => (
               <div key={companion.id} className="mini-card">

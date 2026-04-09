@@ -5,12 +5,14 @@ interface Member {
   id: string;
   name: string;
   relation: string;
+  age: string;
   layout: "full" | "simple" | "full-simple";
   photo_avant: string | null;
   photo_apres: string | null;
   photo_signe: string | null;
   photo_single: string | null;
   card_class: string | null;
+  companion_label: string | null;
   section: string;
   sort_order: number;
 }
