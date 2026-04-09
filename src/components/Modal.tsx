@@ -36,6 +36,7 @@ export default function Modal({
           width={800}
           height={600}
           style={{ width: "100%", maxHeight: "400px", objectFit: "contain", borderRadius: "16px", background: "#f5f5f5" }}
+          unoptimized={imageUrl?.endsWith(".gif")}
         />
 
         {label && <div className="modal-name">{label}</div>}
