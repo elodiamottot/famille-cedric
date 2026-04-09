@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-gold: #D4A853;
+  --color-coral: #E8845C;
+  --color-green: #6BA889;
+  --color-purple: #9B7EC8;
+  --color-teal: #5BA4B5;
+  --color-grey: #6B7B8D;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #FFF5E6 0%, #F9DCC4 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Contenteditable styling */
+[contenteditable] {
+  outline: 2px solid transparent;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+[contenteditable]:focus {
+  outline: 2px solid var(--color-gold);
+  background-color: rgba(212, 168, 83, 0.1);
+}
+
+[contenteditable]:hover:not(:focus) {
+  background-color: rgba(212, 168, 83, 0.05);
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.modal-button {
+  position: absolute;
+  background-color: var(--color-gold);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  font-family: 'Nunito', sans-serif;
+}
+
+.modal-button:hover {
+  background-color: #c49744;
+}
+
+.modal-close {
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.modal-replace {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Photo slot styling */
+.photo-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+}
+
+.photo-slot:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.photo-slot.empty {
+  border: 3px dashed rgba(212, 168, 83, 0.4);
+  cursor: pointer;
+}
+
+.photo-slot.filled {
+  cursor: pointer;
+}
+
+.photo-slot-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-slot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 32px;
+}
+
+.photo-slot.filled:hover .photo-slot-overlay {
+  opacity: 1;
+}
+
+/* Section backgrounds */
+.section-trombi {
+  background: linear-gradient(135deg, #FFF5E6 0%, #F9DCC4 100%);
+}
+
+.section-larnay {
+  background: linear-gradient(135deg, #F3EEFF 0%, #DDD0FF 100%);
+}
+
+.section-signaire {
+  background: linear-gradient(135deg, #E8F5F0 0%, #C8E6D8 100%);
+}
+
+.section-calendar {
+  background: linear-gradient(135deg, #EFF3F8 0%, #D0DCE8 100%);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .modal-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
