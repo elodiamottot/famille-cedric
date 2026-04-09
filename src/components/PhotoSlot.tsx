@@ -32,8 +32,8 @@ export default function PhotoSlot({
 
   const dimensions =
     size === "lg"
-      ? { width: "180px", height: "160px" }
-      : { width: "140px", height: "130px" };
+      ? { width: "120px", height: "213px" }
+      : { width: "80px", height: "142px" };
 
   const slotClass = `slot-${slotType}`;
   const iconEmoji = slotType === "signe" || slotType === "gif" ? "🎬" : "📸";

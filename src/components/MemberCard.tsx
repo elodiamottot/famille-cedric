@@ -68,7 +68,7 @@ export default function MemberCard({
               table="members"
               id={member.id}
               field="photo_apres"
-              label="Après"
+              label="Maintenant"
               currentUrl={member.photo_apres}
               size="lg"
               slotType="apres"
@@ -122,7 +122,7 @@ export default function MemberCard({
               table="members"
               id={member.id}
               field="photo_apres"
-              label="Après"
+              label="Maintenant"
               currentUrl={member.photo_apres}
               size="lg"
               slotType="apres"
