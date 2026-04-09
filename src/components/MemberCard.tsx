@@ -27,14 +27,12 @@ interface Companion {
 interface MemberCardProps {
   member: Member;
   companions?: Companion[];
-  sectionColor: string;
   onUpdate?: () => void;
 }
 
 export default function MemberCard({
   member,
   companions = [],
-  sectionColor,
   onUpdate,
 }: MemberCardProps) {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -44,93 +42,99 @@ export default function MemberCard({
     onUpdate?.();
   };
 
+  const isCedric = member.card_class === "cedric-card";
   const isWide = member.card_class === "wide-card";
 
   const renderPhotoLayout = () => {
     switch (member.layout) {
       case "full":
         return (
-          <div className="flex gap-4">
-            <div className="flex flex-col gap-4">
-              <PhotoSlot
-                key={`${refreshKey}-avant`}
-                table="members"
-                id={member.id}
-                field="photo_avant"
-                label="Avant"
-                currentUrl={member.photo_avant}
-                size="lg"
-                onUpdate={handleUpdate}
-              />
-              <PhotoSlot
-                key={`${refreshKey}-apres`}
-                table="members"
-                id={member.id}
-                field="photo_apres"
-                label="Après"
-                currentUrl={member.photo_apres}
-                size="lg"
-                onUpdate={handleUpdate}
-              />
-            </div>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <PhotoSlot
+              key={`${refreshKey}-avant`}
+              table="members"
+              id={member.id}
+              field="photo_avant"
+              label="Avant"
+              currentUrl={member.photo_avant}
+              size="lg"
+              slotType="avant"
+              onUpdate={handleUpdate}
+            />
+            <PhotoSlot
+              key={`${refreshKey}-apres`}
+              table="members"
+              id={member.id}
+              field="photo_apres"
+              label="Après"
+              currentUrl={member.photo_apres}
+              size="lg"
+              slotType="apres"
+              onUpdate={handleUpdate}
+            />
             <PhotoSlot
               key={`${refreshKey}-signe`}
               table="members"
               id={member.id}
               field="photo_signe"
-              label="Signé"
+              label="Signe"
               currentUrl={member.photo_signe}
               size="lg"
+              slotType="signe"
               onUpdate={handleUpdate}
             />
           </div>
         );
       case "simple":
         return (
-          <PhotoSlot
-            key={`${refreshKey}-single`}
-            table="members"
-            id={member.id}
-            field="photo_single"
-            label="Photo"
-            currentUrl={member.photo_single}
-            size="lg"
-            onUpdate={handleUpdate}
-          />
-        );
-      case "full-simple":
-        return (
-          <div className="flex gap-4 flex-wrap">
-            <div className="flex flex-col gap-4">
-              <PhotoSlot
-                key={`${refreshKey}-avant`}
-                table="members"
-                id={member.id}
-                field="photo_avant"
-                label="Avant"
-                currentUrl={member.photo_avant}
-                size="lg"
-                onUpdate={handleUpdate}
-              />
-              <PhotoSlot
-                key={`${refreshKey}-apres`}
-                table="members"
-                id={member.id}
-                field="photo_apres"
-                label="Après"
-                currentUrl={member.photo_apres}
-                size="lg"
-                onUpdate={handleUpdate}
-              />
-            </div>
+          <div className="flex justify-center">
             <PhotoSlot
               key={`${refreshKey}-single`}
               table="members"
               id={member.id}
               field="photo_single"
-              label="Simple"
+              label="Photo"
               currentUrl={member.photo_single}
               size="lg"
+              slotType="photo"
+              onUpdate={handleUpdate}
+            />
+          </div>
+        );
+      case "full-simple":
+        return (
+          <div className="flex gap-3 justify-center flex-wrap">
+            <PhotoSlot
+              key={`${refreshKey}-avant`}
+              table="members"
+              id={member.id}
+              field="photo_avant"
+              label="Avant"
+              currentUrl={member.photo_avant}
+              size="lg"
+              slotType="avant"
+              onUpdate={handleUpdate}
+            />
+            <PhotoSlot
+              key={`${refreshKey}-apres`}
+              table="members"
+              id={member.id}
+              field="photo_apres"
+              label="Après"
+              currentUrl={member.photo_apres}
+              size="lg"
+              slotType="apres"
+              onUpdate={handleUpdate}
+            />
+            <PhotoSlot
+              key={`${refreshKey}-single`}
+              table="members"
+              id={member.id}
+              field="photo_single"
+              label="Photo"
+              currentUrl={member.photo_single}
+              size="lg"
+              slotType="photo"
               onUpdate={handleUpdate}
             />
           </div>
@@ -142,60 +146,63 @@ export default function MemberCard({
 
   return (
     <div
-      className={`
-        bg-white rounded-lg shadow-md p-6 border-l-8
-        ${sectionColor}
-        ${isWide ? "col-span-2" : ""}
-      `}
+      className={`card ${isCedric ? "cedric-card" : ""}`}
+      style={isCedric ? { width: "500px", maxWidth: "100%" } : isWide ? { width: "100%", maxWidth: "870px" } : { width: "420px", maxWidth: "100%" }}
     >
-      <div className="mb-6">
-        <EditableText
-          key={`${refreshKey}-name`}
-          table="members"
-          id={member.id}
-          field="name"
-          value={member.name}
-          className="text-2xl font-bold text-gray-800 mb-2"
-          onUpdate={handleUpdate}
-        />
-        <EditableText
-          key={`${refreshKey}-relation`}
-          table="members"
-          id={member.id}
-          field="relation"
-          value={member.relation}
-          className="text-sm text-gray-600"
-          onUpdate={handleUpdate}
-        />
-      </div>
+      <EditableText
+        key={`${refreshKey}-name`}
+        table="members"
+        id={member.id}
+        field="name"
+        value={member.name}
+        className="card-name"
+        onUpdate={handleUpdate}
+      />
+      <EditableText
+        key={`${refreshKey}-relation`}
+        table="members"
+        id={member.id}
+        field="relation"
+        value={member.relation}
+        className="card-relation"
+        onUpdate={handleUpdate}
+      />
 
-      <div className="mb-6">{renderPhotoLayout()}</div>
+      <div className="mb-4">{renderPhotoLayout()}</div>
 
       {companions.length > 0 && (
-        <div className="border-t pt-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-3">
-            Compagnons
-          </h4>
-          <div className="flex flex-wrap gap-3">
+        <div className="mini-trombi">
+          <div className="mini-trombi-title">Compagnons</div>
+          <div className="flex flex-wrap gap-3 justify-center">
             {companions.map((companion) => (
-              <div
-                key={companion.id}
-                className="flex flex-col items-center gap-2"
-              >
-                {companion.type === "photo" || companion.type === "both" ? (
-                  <PhotoSlot
-                    table="companions"
-                    id={companion.id}
-                    field="photo"
-                    label={companion.name}
-                    currentUrl={companion.photo}
-                    size="sm"
-                    onUpdate={handleUpdate}
-                  />
-                ) : null}
-                <span className="text-xs text-gray-600 max-w-[140px] text-center">
-                  {companion.name}
-                </span>
+              <div key={companion.id} className="mini-card">
+                <div className="mini-name">{companion.name}</div>
+                <div className="flex gap-2 justify-center mt-2">
+                  {(companion.type === "photo" || companion.type === "both") && (
+                    <PhotoSlot
+                      table="companions"
+                      id={companion.id}
+                      field="photo"
+                      label={companion.name}
+                      currentUrl={companion.photo}
+                      size="sm"
+                      slotType="photo"
+                      onUpdate={handleUpdate}
+                    />
+                  )}
+                  {companion.type === "both" && (
+                    <PhotoSlot
+                      table="companions"
+                      id={companion.id}
+                      field="signe"
+                      label="Signe"
+                      currentUrl={companion.signe}
+                      size="sm"
+                      slotType="signe"
+                      onUpdate={handleUpdate}
+                    />
+                  )}
+                </div>
               </div>
             ))}
           </div>

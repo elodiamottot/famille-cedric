@@ -12,9 +12,9 @@ interface LarnayMember {
 }
 
 const SECTION_CONFIG = {
-  main: { title: "🏫 Larnay", color: "border-purple-500" },
-  pros: { title: "👩‍⚕️ Professionnels", color: "border-purple-500" },
-  residents: { title: "🧑‍🤝‍🧑 Résidents", color: "border-purple-500" },
+  main: { title: "🏫 Larnay", badge: "purple" },
+  pros: { title: "👩‍⚕️ Professionnels", badge: "purple" },
+  residents: { title: "🧑‍🤝‍🧑 Résidents", badge: "purple" },
 };
 
 export default async function LarnayPage() {
@@ -35,54 +35,43 @@ export default async function LarnayPage() {
     membersList: LarnayMember[]
   ) => {
     if (membersList.length === 0) return null;
-
     const config = SECTION_CONFIG[key];
 
     return (
-      <section key={key} className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          {config.title}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section key={key} className="mb-16">
+        <div className="text-center mb-8">
+          <h2 className={`section-badge ${config.badge}`}>{config.title}</h2>
+        </div>
+        <div className="cards-grid">
           {membersList.map((member) => (
-            <div
-              key={member.id}
-              className={`bg-white rounded-lg shadow-md p-6 border-l-8 ${config.color}`}
-            >
+            <div key={member.id} className="vocab-card">
               <EditableText
                 table="larnay"
                 id={member.id}
                 field="name"
                 value={member.name}
-                className="text-2xl font-bold text-gray-800 mb-4"
+                className="vocab-name"
+                style={{ color: "#7B5EA8" }}
               />
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">
-                    Photo
-                  </p>
-                  <PhotoSlot
-                    table="larnay"
-                    id={member.id}
-                    field="photo"
-                    label="Photo"
-                    currentUrl={member.photo}
-                    size="lg"
-                  />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-600 mb-2">
-                    Signé
-                  </p>
-                  <PhotoSlot
-                    table="larnay"
-                    id={member.id}
-                    field="signe"
-                    label="Signé"
-                    currentUrl={member.signe}
-                    size="lg"
-                  />
-                </div>
+              <div className="flex gap-3 justify-center">
+                <PhotoSlot
+                  table="larnay"
+                  id={member.id}
+                  field="photo"
+                  label="Photo"
+                  currentUrl={member.photo}
+                  size="lg"
+                  slotType="photo"
+                />
+                <PhotoSlot
+                  table="larnay"
+                  id={member.id}
+                  field="signe"
+                  label="Signe"
+                  currentUrl={member.signe}
+                  size="lg"
+                  slotType="signe"
+                />
               </div>
             </div>
           ))}
@@ -92,14 +81,29 @@ export default async function LarnayPage() {
   };
 
   return (
-    <div className="section-larnay min-h-screen rounded-lg p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-12 text-center">
-        Larnay
-      </h1>
+    <div className="bg-larnay min-h-screen">
+      <div className="page-header larnay">
+        <h1>Larnay</h1>
+        <p>L&apos;institution et les personnes</p>
+      </div>
 
-      {renderSection("main", sections.main)}
-      {renderSection("pros", sections.pros)}
-      {renderSection("residents", sections.residents)}
+      <div className="instructions" style={{ color: "#7B5EA8" }}>
+        <strong>Comment ça marche ?</strong><br />
+        Clique sur un emplacement vide pour ajouter une photo ou un signe.
+        Clique sur une image existante pour la voir en grand ou la remplacer.
+      </div>
+
+      <div className="pb-16">
+        {renderSection("main", sections.main)}
+        {renderSection("pros", sections.pros)}
+        {renderSection("residents", sections.residents)}
+      </div>
+
+      <footer className="app-footer" style={{ color: "#9B7EC8" }}>
+        <span className="heart" style={{ color: "#9B7EC8" }}>❤️</span>
+        <br />
+        Fait avec amour pour Cédric
+      </footer>
     </div>
   );
 }

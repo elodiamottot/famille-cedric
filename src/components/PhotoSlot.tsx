@@ -12,6 +12,7 @@ interface PhotoSlotProps {
   label: string;
   currentUrl: string | null;
   size?: "lg" | "sm";
+  slotType?: "avant" | "apres" | "signe" | "gif" | "photo" | "default";
   onUpdate?: () => void;
 }
 
@@ -22,14 +23,20 @@ export default function PhotoSlot({
   label,
   currentUrl,
   size = "lg",
+  slotType = "default",
   onUpdate,
 }: PhotoSlotProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  const dimensions = size === "lg" ? "w-[180px] h-[160px]" : "w-[140px] h-[130px]";
-  const iconSize = size === "lg" ? "text-5xl" : "text-3xl";
+  const dimensions =
+    size === "lg"
+      ? { width: "180px", height: "160px" }
+      : { width: "140px", height: "130px" };
+
+  const slotClass = `slot-${slotType}`;
+  const iconEmoji = slotType === "signe" || slotType === "gif" ? "🎬" : "📸";
 
   const handleFileSelect = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -77,7 +84,8 @@ export default function PhotoSlot({
     <>
       {currentUrl ? (
         <div
-          className={`photo-slot filled ${dimensions}`}
+          className={`photo-slot filled ${slotClass}`}
+          style={dimensions}
           onClick={() => setIsModalOpen(true)}
           role="button"
           tabIndex={0}
@@ -93,13 +101,16 @@ export default function PhotoSlot({
             alt={label}
             fill
             className="photo-slot-image"
+            style={{ objectFit: "cover" }}
             priority
           />
+          <span className="slot-label">{label}</span>
           <div className="photo-slot-overlay">✏️</div>
         </div>
       ) : (
         <div
-          className={`photo-slot empty ${dimensions}`}
+          className={`photo-slot ${slotClass}`}
+          style={dimensions}
           onClick={() => fileInputRef.current?.click()}
           role="button"
           tabIndex={0}
@@ -110,11 +121,9 @@ export default function PhotoSlot({
             }
           }}
         >
-          <div className="flex flex-col items-center gap-2">
-            <div className={iconSize}>📸</div>
-            <span className="text-xs font-semibold text-gray-600 text-center px-2">
-              {label}
-            </span>
+          <div className="slot-icon-wrap">
+            <span className="slot-icon">{iconEmoji}</span>
+            <span className="slot-text">{label}</span>
           </div>
         </div>
       )}
@@ -132,6 +141,7 @@ export default function PhotoSlot({
       <Modal
         isOpen={isModalOpen}
         imageUrl={currentUrl || ""}
+        label={label}
         onClose={() => setIsModalOpen(false)}
         onReplace={handleEdit}
       />

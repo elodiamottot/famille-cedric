@@ -22,9 +22,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className="antialiased">
         <Nav />
-        <main className="pt-24 pb-16 px-4 max-w-7xl mx-auto">
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ interface EditableTextProps {
   field: string;
   value: string;
   className?: string;
+  style?: React.CSSProperties;
   onUpdate?: () => void;
 }
 
@@ -18,6 +19,7 @@ export default function EditableText({
   field,
   value,
   className = "",
+  style,
   onUpdate,
 }: EditableTextProps) {
   const elementRef = useRef<HTMLDivElement>(null);
@@ -69,6 +71,7 @@ export default function EditableText({
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       className={`cursor-text ${className} ${isSaving ? "opacity-50" : ""}`}
+      style={style}
       role="textbox"
       tabIndex={0}
     >

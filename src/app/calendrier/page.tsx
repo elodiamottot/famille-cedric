@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import PhotoSlot from "@/components/PhotoSlot";
 import EditableText from "@/components/EditableText";
 
 interface CalendarEntry {
@@ -19,10 +18,16 @@ interface CalendarImage {
   sort_order: number;
 }
 
+const MONTH_NAMES = [
+  "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+  "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre",
+];
+
+const DAY_HEADERS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+
 export default function CalendriePage() {
   const [entries, setEntries] = useState<Record<string, CalendarEntry>>({});
   const [images, setImages] = useState<Record<string, CalendarImage[]>>({});
-  const [currentMonth, setCurrentMonth] = useState(3); // April
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,145 +70,113 @@ export default function CalendriePage() {
     setEntries(entriesMap);
   };
 
-  const getDaysInMonth = (month: number, year: number) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
+  const getDaysInMonth = (month: number, year: number) =>
+    new Date(year, month + 1, 0).getDate();
 
   const getFirstDayOfMonth = (month: number, year: number) => {
-    return new Date(year, month, 1).getDay();
+    const day = new Date(year, month, 1).getDay();
+    return day === 0 ? 6 : day - 1; // Monday = 0
   };
 
-  const monthNames = [
-    "Janvier",
-    "Février",
-    "Mars",
-    "Avril",
-    "Mai",
-    "Juin",
-    "Juillet",
-    "Août",
-    "Septembre",
-    "Octobre",
-    "Novembre",
-    "Décembre",
-  ];
-
   const year = 2026;
-  const daysInMonth = getDaysInMonth(currentMonth, year);
-  const firstDay = getFirstDayOfMonth(currentMonth, year);
 
-  const days = [];
-  for (let i = 0; i < firstDay; i++) {
-    days.push(null);
-  }
-  for (let day = 1; day <= daysInMonth; day++) {
-    days.push(day);
-  }
+  const dateStr = (month: number, day: number) =>
+    `2026-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-  const dateStr = (day: number) =>
-    `2026-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(
-      2,
-      "0"
-    )}`;
+  const renderMonth = (month: number) => {
+    const daysInMonth = getDaysInMonth(month, year);
+    const firstDay = getFirstDayOfMonth(month, year);
 
-  return (
-    <div className="section-calendar min-h-screen rounded-lg p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
-        Calendrier 2026
-      </h1>
+    const cells: (number | null)[] = [];
+    for (let i = 0; i < firstDay; i++) cells.push(null);
+    for (let day = 1; day <= daysInMonth; day++) cells.push(day);
 
-      <div className="flex justify-between items-center mb-8">
-        <button
-          onClick={() =>
-            setCurrentMonth((m) => (m === 0 ? 11 : m - 1))
-          }
-          className="px-6 py-3 bg-teal-500 text-white rounded-lg font-bold text-xl hover:bg-teal-600"
-          aria-label="Mois précédent"
-        >
-          ←
-        </button>
-        <h2 className="text-3xl font-bold text-gray-800">
-          {monthNames[currentMonth]}
-        </h2>
-        <button
-          onClick={() =>
-            setCurrentMonth((m) => (m === 11 ? 0 : m + 1))
-          }
-          className="px-6 py-3 bg-teal-500 text-white rounded-lg font-bold text-xl hover:bg-teal-600"
-          aria-label="Mois suivant"
-        >
-          →
-        </button>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-lg p-6 overflow-x-auto">
-        <div className="grid grid-cols-7 gap-2 min-w-max">
-          {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((day) => (
-            <div
-              key={day}
-              className="w-40 font-bold text-center py-2 bg-teal-100 rounded"
-            >
-              {day}
-            </div>
+    return (
+      <div key={month} className="cal-month">
+        <div className="cal-month-title">{MONTH_NAMES[month]} {year}</div>
+        <div className="cal-grid">
+          {DAY_HEADERS.map((d) => (
+            <div key={d} className="cal-header">{d}</div>
           ))}
+          {cells.map((day, idx) => {
+            if (day === null) {
+              return <div key={`empty-${idx}`} className="cal-day empty" />;
+            }
+            const ds = dateStr(month, day);
+            const entry = entries[ds];
+            const dayOfWeek = (firstDay + day - 1) % 7;
+            const isWeekend = dayOfWeek >= 5;
 
-          {days.map((day, idx) => (
-            <div
-              key={idx}
-              className={`
-                w-40 min-h-48 border rounded-lg p-3 flex flex-col gap-2
-                ${
-                  day === null
-                    ? "bg-gray-100"
-                    : "bg-white hover:bg-blue-50 transition-colors"
-                }
-              `}
-            >
-              {day !== null && (
-                <>
-                  <div className="font-bold text-lg text-gray-800">
-                    {day}
-                  </div>
-                  <div className="flex-1 flex flex-col gap-2">
-                    {entries[dateStr(day)]?.is_birthday && (
-                      <div className="text-2xl">🎂</div>
-                    )}
+            return (
+              <div
+                key={ds}
+                className={`cal-day ${isWeekend ? "weekend" : ""}`}
+              >
+                <div className="day-num">
+                  {day}
+                  {entry?.is_birthday && <span>🎂</span>}
+                </div>
+                <div className="day-content">
+                  {entry && (
                     <EditableText
                       table="calendar_entries"
-                      id={entries[dateStr(day)]?.id || ""}
+                      id={entry.id}
                       field="content"
-                      value={entries[dateStr(day)]?.content || ""}
-                      className="text-sm text-gray-700 flex-1 rounded bg-gray-50 p-2"
+                      value={entry.content || ""}
                       onUpdate={handleUpdate}
                     />
-                  </div>
-                  {images[dateStr(day)] && images[dateStr(day)].length > 0 && (
-                    <div className="pt-2 border-t">
-                      <div className="text-xs font-semibold text-gray-600 mb-1">
-                        Photos
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {images[dateStr(day)].map((img) => (
-                          <PhotoSlot
-                            key={img.id}
-                            table="calendar_images"
-                            id={img.id}
-                            field="image_url"
-                            label={`Photo ${img.sort_order}`}
-                            currentUrl={img.image_url}
-                            size="sm"
-                            onUpdate={handleUpdate}
-                          />
-                        ))}
-                      </div>
-                    </div>
                   )}
-                </>
-              )}
-            </div>
-          ))}
+                </div>
+                {images[ds] && images[ds].length > 0 && (
+                  <div style={{ marginTop: "4px" }}>
+                    {images[ds].map((img) => (
+                      <img
+                        key={img.id}
+                        src={img.image_url}
+                        alt=""
+                        style={{
+                          width: "100%",
+                          maxHeight: "80px",
+                          objectFit: "cover",
+                          borderRadius: "6px",
+                          marginBottom: "2px",
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
+    );
+  };
+
+  // April (3) to December (11)
+  const months = [3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+  return (
+    <div className="bg-calendrier min-h-screen">
+      <div className="page-header calendrier">
+        <h1>Calendrier de Cédric</h1>
+        <p>Avril — Décembre 2026</p>
+      </div>
+
+      <div className="instructions" style={{ color: "#6B7B8D" }}>
+        <strong style={{ color: "#556573" }}>Comment ça marche ?</strong><br />
+        Clique dans une case pour écrire. Les anniversaires sont marqués avec 🎂.
+      </div>
+
+      <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 20px 60px" }}>
+        {months.map((m) => renderMonth(m))}
+      </div>
+
+      <footer className="app-footer" style={{ color: "#6B7B8D" }}>
+        <span className="heart" style={{ color: "#6B7B8D" }}>❤️</span>
+        <br />
+        Fait avec amour pour Cédric
+      </footer>
     </div>
   );
 }

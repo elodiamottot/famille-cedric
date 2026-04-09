@@ -26,18 +26,10 @@ interface Companion {
 }
 
 const SECTION_CONFIG = {
-  cedric: { title: "⭐ C'est toi !", color: "border-yellow-500", bg: "bg-yellow-50" },
-  parents: {
-    title: "🏠 Les parents d'accueil",
-    color: "border-orange-500",
-    bg: "bg-orange-50",
-  },
-  siblings: {
-    title: "🌿 Les frères et sœurs d'accueil",
-    color: "border-green-500",
-    bg: "bg-green-50",
-  },
-  memorial: { title: "🕊️ En mémoire", color: "border-gray-500", bg: "bg-gray-50" },
+  cedric: { title: "⭐ C'est toi !", badge: "coral" },
+  parents: { title: "🏠 Les parents d'accueil", badge: "green" },
+  siblings: { title: "🌿 Les frères et sœurs d'accueil", badge: "gold" },
+  memorial: { title: "🕊️ En mémoire", badge: "memorial" },
 };
 
 export default async function TrombiPage() {
@@ -74,21 +66,19 @@ export default async function TrombiPage() {
     membersList: Member[]
   ) => {
     if (membersList.length === 0) return null;
-
     const config = SECTION_CONFIG[key];
 
     return (
-      <section key={key} className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-          {config.title}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section key={key} className="mb-16">
+        <div className="text-center mb-8">
+          <h2 className={`section-badge ${config.badge}`}>{config.title}</h2>
+        </div>
+        <div className="cards-grid">
           {membersList.map((member) => (
             <MemberCard
               key={member.id}
               member={member}
               companions={companionsByMember[member.id] || []}
-              sectionColor={config.color}
             />
           ))}
         </div>
@@ -97,15 +87,30 @@ export default async function TrombiPage() {
   };
 
   return (
-    <div className="section-trombi min-h-screen rounded-lg p-6">
-      <h1 className="text-4xl font-bold text-gray-800 mb-12 text-center">
-        Trombinoscope
-      </h1>
+    <div className="bg-trombi min-h-screen">
+      <div className="page-header trombi">
+        <h1>Trombinoscope</h1>
+        <p>La famille de Cédric</p>
+      </div>
 
-      {renderSection("cedric", sections.cedric)}
-      {renderSection("parents", sections.parents)}
-      {renderSection("siblings", sections.siblings)}
-      {renderSection("memorial", sections.memorial)}
+      <div className="instructions" style={{ color: "#8B6050" }}>
+        <strong style={{ color: "#C06030" }}>Comment ça marche ?</strong><br />
+        Clique sur une photo pour la voir en grand ou la remplacer.<br />
+        Clique sur un nom ou un texte pour le modifier.
+      </div>
+
+      <div className="pb-16">
+        {renderSection("cedric", sections.cedric)}
+        {renderSection("parents", sections.parents)}
+        {renderSection("siblings", sections.siblings)}
+        {renderSection("memorial", sections.memorial)}
+      </div>
+
+      <footer className="app-footer" style={{ color: "#B08060" }}>
+        <span className="heart" style={{ color: "#E8845C" }}>❤️</span>
+        <br />
+        Fait avec amour pour Cédric
+      </footer>
     </div>
   );
 }
