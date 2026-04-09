@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { supabase } from "@/lib/supabase";
 import PhotoSlot from "@/components/PhotoSlot";
 import EditableText from "@/components/EditableText";
