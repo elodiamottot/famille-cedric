@@ -129,6 +129,17 @@ export default function MemberCard({
               onUpdate={handleUpdate}
             />
             <PhotoSlot
+              key={`${refreshKey}-signe`}
+              table="members"
+              id={member.id}
+              field="photo_signe"
+              label="Signe"
+              currentUrl={member.photo_signe}
+              size="lg"
+              slotType="signe"
+              onUpdate={handleUpdate}
+            />
+            <PhotoSlot
               key={`${refreshKey}-single`}
               table="members"
               id={member.id}
