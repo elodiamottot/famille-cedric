@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Modal from "./Modal";
 import { supabase } from "@/lib/supabase";
@@ -26,6 +27,7 @@ export default function PhotoSlot({
   slotType = "default",
   onUpdate,
 }: PhotoSlotProps) {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -68,8 +70,10 @@ export default function PhotoSlot({
 
       onUpdate?.();
       setIsModalOpen(false);
+      router.refresh();
     } catch (error) {
       console.error("Upload failed:", error);
+      alert("Erreur lors de l'upload. Réessaie !");
     } finally {
       setIsUploading(false);
     }
