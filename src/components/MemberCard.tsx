@@ -89,7 +89,7 @@ export default function MemberCard({
         );
       case "simple":
         return (
-          <div className="flex justify-center">
+          <div className="flex gap-3 justify-center flex-wrap">
             <PhotoSlot
               key={`${refreshKey}-single`}
               table="members"
@@ -101,6 +101,19 @@ export default function MemberCard({
               slotType="photo"
               onUpdate={handleUpdate}
             />
+            {member.photo_signe && (
+              <PhotoSlot
+                key={`${refreshKey}-signe`}
+                table="members"
+                id={member.id}
+                field="photo_signe"
+                label="Signe"
+                currentUrl={member.photo_signe}
+                size="lg"
+                slotType="signe"
+                onUpdate={handleUpdate}
+              />
+            )}
           </div>
         );
       case "full-simple":
