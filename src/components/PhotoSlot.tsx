@@ -107,7 +107,7 @@ export default function PhotoSlot({
             className="photo-slot-image"
             style={{ objectFit: "cover" }}
             priority
-            unoptimized={currentUrl?.endsWith(".gif")}
+            unoptimized
           />
           <span className="slot-label">{label}</span>
           <div className="photo-slot-overlay">✏️</div>
