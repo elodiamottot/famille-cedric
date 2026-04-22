@@ -18,6 +18,7 @@ const TABS = [
   { key: "lieux", label: "📍 Lieux", badge: "teal", subClass: "sub-teal" },
   { key: "aliments", label: "🍽️ Aliments", badge: "pink", subClass: "sub-pink" },
   { key: "trains", label: "🚆 Trains", badge: "blue", subClass: "sub-blue" },
+  { key: "personnages", label: "🧑 Personnages", badge: "gold", subClass: "sub-gold" },
 ];
 
 export default function SignairePage() {
